@@ -137,7 +137,10 @@ class CountryGhgEmissions extends PureComponent {
         loading={loading}
         height={360}
         forceFixedFormatDecimals={forceFixedFormatDecimals}
-        stepped={sourceSelected.label === 'UNFCCC'}
+        stepped={
+          sourceSelected.label === 'UNFCCC_AI' ||
+          sourceSelected.label === 'UNFCCC_NAI'
+        }
       />
     );
   }

@@ -22,7 +22,6 @@ import {
   DEFAULT_AXES_CONFIG,
   ALLOWED_SECTORS_BY_SOURCE,
   EXTRA_ALLOWED_SECTORS_BY_SOURCE_ONLY_GLOBAL,
-  DEFAULT_EMISSIONS_SELECTIONS,
   DATA_SCALE
 } from 'data/constants';
 
@@ -80,6 +79,7 @@ export const getVersionOptions = createSelector(
   [getVersions, getSources, getSourceSelected, getData],
   (versions, sources, sourceSelected, data) => {
     if (!sourceSelected || !versions || !data) return null;
+
     const versionsFromData = groupBy(data, 'gwp');
     return sortBy(
       Object.keys(versionsFromData).map(version => ({
@@ -110,9 +110,6 @@ export const getAllowedSectors = createSelector(
   [getSourceSelected, getVersionSelected],
   (source, version) => {
     if (!source || !version) return null;
-    if (source.label === 'UNFCCC') {
-      return ALLOWED_SECTORS_BY_SOURCE[source.label][version.label];
-    }
     return ALLOWED_SECTORS_BY_SOURCE[source.label].concat(
       EXTRA_ALLOWED_SECTORS_BY_SOURCE_ONLY_GLOBAL[source.label]
     );
@@ -140,14 +137,7 @@ export const filterAndSortData = createSelector(
   (data, source, version, breakBy, sectorsAllowed) => {
     if (!data || isEmpty(data)) return null;
     const breakByValue = breakBy.value;
-    const dataBySource =
-      source.label === 'UNFCCC' && breakByValue !== 'sector'
-        ? data.filter(
-          d =>
-            d.sector.trim() ===
-              DEFAULT_EMISSIONS_SELECTIONS[source.label].sector[version.label]
-        )
-        : data;
+    const dataBySource = data;
     const dataBySector =
       breakByValue === 'sector'
         ? dataBySource.filter(d => sectorsAllowed.indexOf(d.sector.trim()) > -1)

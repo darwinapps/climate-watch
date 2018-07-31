@@ -132,9 +132,6 @@ export const getAllowedSectors = createSelector(
   [getSourceSelected, getVersionSelected],
   (source, version) => {
     if (!source || !version) return null;
-    if (source.label === 'UNFCCC') {
-      return ALLOWED_SECTORS_BY_SOURCE[source.label][version.label];
-    }
     return ALLOWED_SECTORS_BY_SOURCE[source.label];
   }
 );

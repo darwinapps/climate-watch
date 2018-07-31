@@ -105,9 +105,6 @@ export const getAllowedSectors = createSelector(
   [getSourceSelected, getVersion],
   (source, version) => {
     if (!source || !version) return null;
-    if (source.label === 'UNFCCC') {
-      return ALLOWED_SECTORS_BY_SOURCE[source.label][version];
-    }
     return ALLOWED_SECTORS_BY_SOURCE[source.label];
   }
 );
@@ -177,10 +174,7 @@ export const filterData = createSelector(
     );
 
     // Filter by sector
-    const defaultSector =
-      source.label === 'UNFCCC'
-        ? [DEFAULT_EMISSIONS_SELECTIONS[source.label].sector[version]]
-        : [DEFAULT_EMISSIONS_SELECTIONS[source.label].sector];
+    const defaultSector = [DEFAULT_EMISSIONS_SELECTIONS[source.label].sector];
     const sectorFilters =
       sectors && sectors.length && sectorOptions.length !== sectors.length
         ? sectors.map(s => s.label)

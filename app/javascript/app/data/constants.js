@@ -59,25 +59,25 @@ export const ALLOWED_SECTORS_BY_SOURCE = {
     'Waste',
     'Other'
   ],
-  UNFCCC: {
-    AR2: [
-      'Energy',
-      'Industrial Processes',
-      'Solvent and Other Product Use',
-      'Agriculture',
-      'Land-Use Change and Forestry',
-      'Waste',
-      'Other'
-    ],
-    AR4: [
-      'Energy',
-      'Industrial Processes and Product Use',
-      'Agriculture',
-      'Land Use, Land-Use Change and Forestry',
-      'Waste',
-      'Other'
-    ]
-  }
+  UNFCCC_NAI: [
+    /* non Annex I */
+    'Energy',
+    'Industrial Processes',
+    'Solvent and Other Product Use',
+    'Agriculture',
+    'Land-Use Change and Forestry',
+    'Waste',
+    'Other'
+  ],
+  UNFCCC_AI: [
+    /* Annex I */
+    'Energy',
+    'Industrial Processes and Product Use',
+    'Agriculture',
+    'Land Use, Land-Use Change and Forestry',
+    'Waste',
+    'Other'
+  ]
 };
 
 export const EXTRA_ALLOWED_SECTORS_BY_SOURCE_ONLY_GLOBAL = {
@@ -95,13 +95,15 @@ export const DEFAULT_EMISSIONS_SELECTIONS = {
     sector: 'Total including LULUCF',
     location: 'WORLD'
   },
-  UNFCCC: {
+  UNFCCC_AI: {
     gas: 'Aggregate GHGs',
-    sector: {
-      AR2: 'Total GHG emissions including LULUCF/LUCF',
-      AR4: 'Total GHG emissions with LULUCF'
-    },
+    sector: 'Total GHG emissions with LULUCF',
     location: 'ANNEXI'
+  },
+  UNFCCC_NAI: {
+    gas: 'Aggregate GHGs',
+    sector: 'Total GHG emissions including LULUCF/LUCF',
+    location: 'NONANNEXI'
   }
 };
 
@@ -281,12 +283,95 @@ export const USERS_PROFESIONAL_SECTORS = [
   'Other'
 ];
 
+export const DATA_EXPLORER_SECTION_NAMES = {
+  'historical-emissions': 'historical_emissions',
+  'ndc-sdg-linkages': 'ndc_sdg',
+  'emission-pathways': 'emission_pathways',
+  'ndc-content': 'ndc_content'
+};
+
+export const DATA_EXPLORER_METHODOLOGY_SOURCE = {
+  'historical-emissions': {
+    PIK: ['historical_emissions_pik'],
+    CAIT: ['historical_emissions_cait'],
+    UNFCCC_AI: ['historical_emissions_unfccc'],
+    UNFCCC_NAI: ['historical_emissions_unfccc']
+  },
+  'ndc-sdg-linkages': ['ndc_sdc_all indicators'],
+  'ndc-content': ['ndc_cait', 'ndc_wb'],
+  'emission-pathways': [null] // model, scenario and indicator related metadata
+};
+
+export const DATA_EXPLORER_FILTERS = {
+  'historical-emissions': ['source', 'gases', 'regions', 'sectors'],
+  'ndc-sdg-linkages': ['goals', 'targets', 'sectors', 'countries'],
+  'emission-pathways': [
+    'locations',
+    'models',
+    'scenarios',
+    'categories',
+    'indicators'
+  ],
+  'ndc-content': ['categories', 'indicators', 'sectors', 'countries']
+};
+
+export const DATA_EXPLORER_DEPENDENCIES = {
+  'emission-pathways': { indicators: ['categories'] }
+};
+
+export const DATA_EXPLORER_SECTION_BASE_URIS = {
+  'historical-emissions': 'ghg-emissions',
+  'ndc-sdg-linkages': 'ndcs-sdg',
+  'ndc-content': 'ndcs-content',
+  'emission-pathways': 'pathways'
+};
+export const DATA_EXPLORER_EXTERNAL_PREFIX = 'external';
+export const DATA_EXPLORER_TO_MODULES_PARAMS = {
+  'historical-emissions': {
+    data_sources: { key: 'source' },
+    gwps: { key: 'version' }
+  },
+  'ndc-sdg-linkages': {
+    goals: {
+      key: 'goal',
+      idLabel: 'number'
+    }
+  },
+  'ndc-content': {},
+  'emission-pathways': {
+    locations: {
+      key: 'currentLocation',
+      idLabel: 'id',
+      currentId: 'iso_code'
+    },
+    models: {
+      key: 'model'
+    },
+    scenarios: {
+      key: 'scenario'
+    },
+    indicators: {
+      key: 'indicator'
+    },
+    categories: {
+      key: 'category'
+    }
+  }
+};
 export const SOURCE_VERSIONS = [
   { name: 'PIK - AR2', data_source_slug: 'PIK', version_slug: 'AR2' },
   { name: 'PIK - AR4', data_source_slug: 'PIK', version_slug: 'AR4' },
   { name: 'CAIT - AR2', data_source_slug: 'CAIT', version_slug: 'AR2' },
-  { name: 'UNFCCC - AR2', data_source_slug: 'UNFCCC', version_slug: 'AR2' },
-  { name: 'UNFCCC - AR4', data_source_slug: 'UNFCCC', version_slug: 'AR4' }
+  {
+    name: 'UNFCCC NAI - AR2',
+    data_source_slug: 'UNFCCC_NAI',
+    version_slug: 'AR2'
+  },
+  {
+    name: 'UNFCCC AI - AR4',
+    data_source_slug: 'UNFCCC_AI',
+    version_slug: 'AR4'
+  }
 ];
 
 export default {

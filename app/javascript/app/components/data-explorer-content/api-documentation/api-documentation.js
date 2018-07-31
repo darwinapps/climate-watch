@@ -57,7 +57,8 @@ const API_CALLS = {
         {
           name: 'data_sources',
           parameter: 'source_ids[]',
-          description: 'emission data source id (CAIT, PIK, UNFCCC)'
+          description:
+            'emission data source id (CAIT, PIK, UNFCCC_AI, UNFCCC_NAI)'
         },
         {
           name: 'gwps',
@@ -67,7 +68,8 @@ const API_CALLS = {
         {
           name: 'gases',
           parameter: 'gas_ids[]',
-          description: 'emission data source id (CAIT, PIK, UNFCCC)'
+          description:
+            'emission data source id (CAIT, PIK, UNFCCC_AI, UNFCCC_NAI)'
         },
         sectorsParam,
         {
