@@ -6,9 +6,16 @@ module Api
 
         def data_source
           object.data_sources.map do |g|
+            metadata_source =
+              if g[:name] =~ /^UNFCCC/
+                'historical_emissions_unfccc'
+              else
+                "historical_emissions_#{g[:name]}"
+              end
+            display_name = g[:name].try(:split, '_').try(:join, ' ')
             g.
               slice(:id, :name, :location_ids, :sector_ids, :gas_ids, :gwp_ids).
-              merge(source: "historical_emissions_#{g[:name]}")
+              merge(source: metadata_source, display_name: display_name)
           end
         end
 
