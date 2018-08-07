@@ -24,8 +24,16 @@ module HistoricalEmissions
 
     private_class_method def self.filters(records, params)
       unless params[:location].blank?
+        iso_codes = params[:location].split(',')
+        locations = Location.where(iso_code3: iso_codes)
+        location_ids =
+          if iso_codes.include? 'NONANNEXI'
+            locations.joins(:location_members).pluck(:member_id)
+          else
+            locations.pluck(:id)
+          end
         records = records.where(
-          locations: {iso_code3: params[:location].split(',')}
+          location_id: location_ids
         )
       end
 
