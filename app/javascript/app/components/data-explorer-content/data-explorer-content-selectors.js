@@ -11,14 +11,20 @@ import {
   DATA_EXPLORER_BLACKLIST,
   DATA_EXPLORER_METHODOLOGY_SOURCE,
   DATA_EXPLORER_FILTERS,
-  SOURCE_VERSIONS,
-  ESP_BLACKLIST,
-  DATA_EXPLORER_SECTION_BASE_URIS,
   DATA_EXPLORER_EXTERNAL_PREFIX,
   DATA_EXPLORER_TO_MODULES_PARAMS,
   DATA_EXPLORER_MULTIPLE_LEVEL_SECTIONS,
+  DATA_EXPLORER_FIRST_TABLE_HEADERS,
   DATA_EXPLORER_SECTIONS
-} from 'data/constants';
+} from 'data/data-explorer-constants';
+import { SOURCE_VERSIONS, ESP_BLACKLIST } from 'data/constants';
+import {
+  getPathwaysModelOptions,
+  getPathwaysScenarioOptions,
+  getPathwaysCategoryOptions,
+  getPathwaysSubcategoryOptions,
+  getPathwaysIndicatorsOptions
+} from './pathway-selector-utils';
 
 const SECTION_NAMES = {
   pathways: 'emission-pathways',
@@ -26,8 +32,11 @@ const SECTION_NAMES = {
 };
 
 const FILTER_NAMES = {
+  models: 'models',
+  scenarios: 'scenarios',
   categories: 'categories',
-  subcategories: 'subcategories'
+  subcategories: 'subcategories',
+  indicators: 'indicators'
 };
 
 const FILTERED_FIELDS = {
@@ -179,16 +188,24 @@ export const getFilterQuery = createSelector(
   (meta, search, section) => filterQueryIds(meta, search, section, false)
 );
 
+export const getSortQuery = createSelector([getSearch], search =>
+  qs.stringify(pick(search, ['sort_col', 'sort_dir']))
+);
+
 export const getLinkFilterQuery = createSelector(
   [getMeta, getSearch, getSection],
   (meta, search, section) => filterQueryIds(meta, search, section, true)
 );
 
-export const parseFilterQuery = createSelector([getFilterQuery], filterIds => {
-  if (!filterIds || isEmpty(filterIds)) return null;
-  const filterQuery = qs.stringify(filterIds);
-  return filterQuery && parseQuery(filterQuery);
-});
+export const parseFilterQuery = createSelector(
+  [getFilterQuery, getSortQuery],
+  (filterIds, sortQuery) => {
+    if (!filterIds || isEmpty(filterIds)) return null;
+    const sortParam = sortQuery ? `?${sortQuery}` : '';
+    const filterQuery = `${qs.stringify(filterIds)}${sortParam}`;
+    return filterQuery && parseQuery(filterQuery);
+  }
+);
 
 export const getLink = createSelector(
   [getLinkFilterQuery, getSection, state => state.meta],
@@ -213,39 +230,42 @@ export const getLink = createSelector(
     const stringifiedQuery = qs.stringify(parsedQuery);
     const urlParameters = stringifiedQuery ? `?${stringifiedQuery}` : '';
     const subSection =
-      DATA_EXPLORER_SECTION_BASE_URIS[section] === 'pathways' ? '/models' : '';
-    return `/${DATA_EXPLORER_SECTION_BASE_URIS[
-      section
-    ]}${subSection}${urlParameters}`;
+      DATA_EXPLORER_SECTIONS[section].moduleName === 'pathways'
+        ? '/models'
+        : '';
+    return `/${DATA_EXPLORER_SECTIONS[section]
+      .moduleName}${subSection}${urlParameters}`;
   }
 );
 
-function getOptions(section, filter, filtersMeta) {
+function getOptions(section, filter, filtersMeta, query) {
   if (section !== SECTION_NAMES.pathways) return filtersMeta[filter];
-  if (
-    filter === FILTER_NAMES.categories ||
-    filter === FILTER_NAMES.subcategories
-  ) {
-    return filtersMeta.categories;
-  }
-  return filtersMeta[filter];
-}
-
-function parseOptions(section, filter, options) {
-  if (section !== SECTION_NAMES.pathways) return options;
   switch (filter) {
+    case FILTER_NAMES.models:
+      return getPathwaysModelOptions(query, filtersMeta, filter);
+    case FILTER_NAMES.scenarios:
+      return getPathwaysScenarioOptions(query, filtersMeta, filter);
     case FILTER_NAMES.categories:
-      return options.filter(option => option.parent_id === null);
+      return getPathwaysCategoryOptions(query, filtersMeta);
     case FILTER_NAMES.subcategories:
-      return options.filter(option => option.parent_id !== null);
+      return getPathwaysSubcategoryOptions(query, filtersMeta);
+    case FILTER_NAMES.indicators:
+      return getPathwaysIndicatorsOptions(query, filtersMeta, filter);
     default:
-      return options;
+      return filtersMeta[filter];
   }
 }
 
 export const getFilterOptions = createSelector(
-  [getMeta, getSection, getCountries, getRegions, getSourceOptions],
-  (meta, section, countries, regions, sourceVersions) => {
+  [
+    getMeta,
+    getSection,
+    getCountries,
+    getRegions,
+    getSourceOptions,
+    getFilterQuery
+  ],
+  (meta, section, countries, regions, sourceVersions, query) => {
     if (!section || isEmpty(meta)) return null;
     const filterKeys = DATA_EXPLORER_FILTERS[section];
     const filtersMeta = meta[section];
@@ -258,10 +278,9 @@ export const getFilterOptions = createSelector(
     }
     const filterOptions = {};
     filterKeys.forEach(f => {
-      const options = getOptions(section, f, filtersMeta);
+      const options = getOptions(section, f, filtersMeta, query);
       if (options) {
-        const parsedOptions = parseOptions(section, f, options);
-        const optionsArray = parsedOptions.map(option => {
+        const optionsArray = options.map(option => {
           const slug =
             option.slug ||
             option.name ||
@@ -540,6 +559,15 @@ export const parseData = createSelector([getData], data => {
     n => DATA_EXPLORER_BLACKLIST.indexOf(n) === -1
   );
   return updatedData.map(d => pick(d, whiteList));
+});
+
+export const getFirstTableHeaders = createSelector([parseData], data => {
+  if (!data || !data.length) return null;
+  const isANumber = i => !isNaN(parseInt(i, 10));
+  const yearColumnKeys = Object.keys(data[0])
+    .filter(k => isANumber(k))
+    .reverse();
+  return DATA_EXPLORER_FIRST_TABLE_HEADERS.concat(yearColumnKeys);
 });
 
 // Pathways Modal Data
