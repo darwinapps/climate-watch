@@ -19,16 +19,18 @@ import { ESP_HOST } from 'data/constants';
 import DataExplorerContentComponent from './data-explorer-content-component';
 import {
   parseData,
+  getActiveFilterRegion,
   getMethodology,
   getSectionLabel,
   getFirstTableHeaders,
-  getFilteredOptions,
+  getDependentOptions,
   getSelectedOptions,
-  getPathwaysMetodology,
   parseFilterQuery,
   parseExternalParams,
-  getLink
+  getLink,
+  getTitleLinks
 } from './data-explorer-content-selectors';
+import { getPathwaysMetodology } from './data-explorer-content-pathways-modal-selectors';
 
 const mapStateToProps = (state, { section, location }) => {
   const search = getSearch(location);
@@ -58,16 +60,12 @@ const mapStateToProps = (state, { section, location }) => {
       ? getPathwaysMetodology(dataState)
       : getMethodology(dataState);
   const data = parseData(dataState);
-  const dataLength =
-    state.dataExplorer &&
-    state.dataExplorer.data &&
-    state.dataExplorer.data[section] &&
-    state.dataExplorer.data[section].total;
-  const metadataSection = !!location.hash && location.hash === '#meta';
   const hasFetchedData =
     state.dataExplorer &&
     state.dataExplorer.data &&
     state.dataExplorer.data[section];
+  const dataLength = hasFetchedData && state.dataExplorer.data[section].total;
+  const metadataSection = !!location.hash && location.hash === '#meta';
   const loading =
     (state.dataExplorer && state.dataExplorer.loading) || !hasFetchedData;
   const loadingMeta = state.dataExplorer && state.dataExplorer.loadingMeta;
@@ -95,12 +93,14 @@ const mapStateToProps = (state, { section, location }) => {
     sectionLabel: getSectionLabel(dataState),
     downloadHref,
     filters: DATA_EXPLORER_FILTERS[section],
-    filterOptions: getFilteredOptions(dataState),
+    filterOptions: getDependentOptions(dataState),
     selectedOptions,
     anchorLinks,
     query: location.search,
     filterQuery,
     parsedExternalParams: parseExternalParams(dataState),
+    activeFilterRegion: getActiveFilterRegion(dataState),
+    titleLinks: getTitleLinks(dataState),
     search,
     loading,
     loadingMeta
@@ -109,7 +109,7 @@ const mapStateToProps = (state, { section, location }) => {
 
 const getDependentKeysToDelete = (value, section, filterName) => {
   const dependentKeysToDelete = [];
-  if (value === undefined && DATA_EXPLORER_DEPENDENCIES[section]) {
+  if (DATA_EXPLORER_DEPENDENCIES[section]) {
     Object.keys(
       DATA_EXPLORER_DEPENDENCIES[section]
     ).forEach(dependentFilterKey => {
@@ -137,28 +137,70 @@ class DataExplorerContentContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { parsedExternalParams, search } = this.props;
+    const { parsedExternalParams } = this.props;
     if (
       prevProps.parsedExternalParams !== parsedExternalParams &&
       !isEmpty(parsedExternalParams)
     ) {
-      const validKeys = Object.keys(search).filter(
-        k => !k.startsWith(DATA_EXPLORER_EXTERNAL_PREFIX)
-      );
-      const validParams = {
-        ...pick(search, validKeys),
-        ...parsedExternalParams
-      };
-
-      const paramsToUpdate = Object.keys(validParams).map(key => ({
-        name: key,
-        value: validParams[key]
-      }));
-      this.updateUrlParam(paramsToUpdate, true);
+      this.addExternalParamsToURL();
     }
   }
 
-  handleFilterChange = (filterName, value) => {
+  addExternalParamsToURL() {
+    const { parsedExternalParams, search } = this.props;
+    const validKeys = Object.keys(search).filter(
+      k => !k.startsWith(DATA_EXPLORER_EXTERNAL_PREFIX)
+    );
+    const validParams = {
+      ...pick(search, validKeys),
+      ...parsedExternalParams
+    };
+
+    const paramsToUpdate = Object.keys(validParams).map(key => ({
+      name: key,
+      value: validParams[key]
+    }));
+    this.updateUrlParam(paramsToUpdate, true);
+  }
+
+  sourceAndVersionParam = (value, section) => {
+    const values = value && value.split(' - ');
+    return [
+      {
+        name: `${section}-data-sources`,
+        value: value && values[0]
+      },
+      {
+        name: `${section}-gwps`,
+        value: value && values[1]
+      }
+    ];
+  };
+
+  parsedMultipleValues = (filterName, value) => {
+    const { selectedOptions } = this.props;
+    const oldFilters = selectedOptions[filterName];
+    const removing = oldFilters && value.length < oldFilters.length;
+    const selectedFilter = !oldFilters
+      ? value[0]
+      : value
+        .filter(x => oldFilters.indexOf(x) === -1)
+        .concat(oldFilters.filter(x => value.indexOf(x) === -1))[0];
+    const filtersParam = [];
+    if (!removing && selectedFilter.groupId === 'regions') {
+      filtersParam.push(selectedFilter.value);
+      selectedFilter.members.forEach(m => filtersParam.push(m.iso_code3));
+    } else {
+      value.forEach(filter => {
+        if (filter.groupId !== 'regions') {
+          filtersParam.push(filter.value);
+        }
+      });
+    }
+    return filtersParam.toString();
+  };
+
+  handleFilterChange = (filterName, value, multiple) => {
     const { section } = this.props;
     const SOURCE_AND_VERSION_KEY = 'source';
     let paramsToUpdate = [];
@@ -167,23 +209,16 @@ class DataExplorerContentContainer extends PureComponent {
       section,
       filterName
     ).map(k => ({ name: `${section}-${k}`, value: undefined }));
-
+    let parsedValue = value;
+    if (multiple) parsedValue = this.parsedMultipleValues(filterName, value);
     if (filterName === SOURCE_AND_VERSION_KEY) {
-      const values = value && value.split(' - ');
-      paramsToUpdate = paramsToUpdate.concat([
-        {
-          name: `${section}-data-sources`,
-          value: value && values[0]
-        },
-        {
-          name: `${section}-gwps`,
-          value: value && values[1]
-        }
-      ]);
+      paramsToUpdate = paramsToUpdate.concat(
+        this.sourceAndVersionParam(value, section)
+      );
     } else {
       paramsToUpdate.push({
         name: `${section}-${filterName}`,
-        value
+        value: parsedValue
       });
     }
     this.updateUrlParam(
@@ -238,7 +273,8 @@ DataExplorerContentContainer.propTypes = {
   location: PropTypes.object,
   downloadHref: PropTypes.string,
   setModalDownloadParams: PropTypes.func,
-  search: PropTypes.object
+  search: PropTypes.object,
+  selectedOptions: PropTypes.object
 };
 
 export default withRouter(
