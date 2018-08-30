@@ -2,7 +2,6 @@ import { createElement } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
-  getLocationParamUpdated,
   isPageNdcp,
   isPageContained,
   isEmbededComponent
@@ -26,13 +25,14 @@ import {
 
 const actions = {
   ...modalMetadataActions,
-  ...ownActions
+  ...ownActions,
 };
 
-const mapStateToProps = (state, { match, location }) => {
+const mapStateToProps = (state, { location }) => {
   const { countrySDGLinkages, ndcsSdgsMeta, ndcsSdgsData } = state;
-  const { iso } = match.params;
-  const search = qs.parse(location.search);
+  const iso = ndcsSdgsData.activeIso;
+  const { activeSector } = countrySDGLinkages
+
   const isNdcp = isPageNdcp(location) || isPageContained;
   const isEmbed = isEmbededComponent(location);
   const tooltipData = countrySDGLinkages.tooltipData;
@@ -42,7 +42,7 @@ const mapStateToProps = (state, { match, location }) => {
       : {};
   const sdgsData = {
     data: ndcsSdgsMeta.data,
-    activeSector: search.sector,
+    activeSector,
     tooltipData,
     targetsData
   };
@@ -93,7 +93,8 @@ const CountrySDGLinkagesContainer = props => {
   };
 
   const handleSectorChange = option => {
-    updateUrlParam({ name: 'sector', value: option ? option.value : '' });
+    props.setSector(option ? option.value : '')
+
     if (option) {
       ReactGA.event({
         category: 'Country',
@@ -101,10 +102,6 @@ const CountrySDGLinkagesContainer = props => {
         label: option.label
       });
     }
-  };
-
-  const updateUrlParam = (params, clear) => {
-    history.replace(getLocationParamUpdated(location, params, clear));
   };
 
   return createElement(CountrySDGLinkagesComponent, {

@@ -82,6 +82,7 @@ import * as myVisualisations from 'components/my-climate-watch/my-visualisations
 import * as myVisualisationsCreator from 'components/my-climate-watch/viz-creator';
 import * as myVisualisationsGraphComponent from 'components/my-climate-watch/my-visualisations/my-cw-vis-graph';
 import * as ndcSdgLinkagesComponent from 'components/ndc-sdg/ndc-sdg-linkages-content';
+import * as ndcsMapComponent from 'components/ndcs/ndcs-map';
 import * as HamburgerComponent from 'components/hamburger';
 import * as AnchorNavComponent from 'components/anchor-nav';
 
@@ -103,6 +104,7 @@ const componentsReducers = {
   vizGraph: handleModule(myVisualisationsGraphComponent),
   espGraph: handleActions(espGraphComponent),
   ndcSdg: handleActions(ndcSdgLinkagesComponent),
+  ndcsMap: handleActions(ndcsMapComponent),
   hamburger: handleActions(HamburgerComponent),
   anchorNav: handleActions(AnchorNavComponent)
 };

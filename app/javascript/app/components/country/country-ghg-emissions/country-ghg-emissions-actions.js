@@ -18,12 +18,12 @@ const fetchCountryGhgEmissionsData = createThunkAction(
   filters => dispatch => {
     dispatch(fetchCountryGhgEmissionsInit());
     const promises = [
-      fetch(`/api/v1/emissions?${qs.stringify(filters)}`).then(response => {
+      fetch(`${process.env.CW_API}/api/v1/emissions?${qs.stringify(filters)}`).then(response => {
         if (response.ok) return response.json();
         throw Error(response.statusText);
       }),
       fetch(
-        `/api/v1/quantifications?location=${filters.location}`
+        `${process.env.CW_API}/api/v1/quantifications?location=${filters.location}`
       ).then(response => {
         if (response.ok) return response.json();
         throw Error(response.statusText);
@@ -54,9 +54,15 @@ const fetchCountryGhgEmissionsData = createThunkAction(
   }
 );
 
+const setCalculation = createAction('setCalculation');
+
+const setSource = createAction('setSource');
+
 export default {
   fetchCountryGhgEmissionsInit,
   fetchCountryGhgEmissionsFail,
   fetchCountryGhgEmissionsData,
-  fetchCountryGhgEmissionsDataReady
+  fetchCountryGhgEmissionsDataReady,
+  setCalculation,
+  setSource,
 };

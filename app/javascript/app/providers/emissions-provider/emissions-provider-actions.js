@@ -8,7 +8,7 @@ const getEmissionsReady = createAction('getEmissionsReady');
 const getEmissions = createThunkAction('getEmissions', filters => dispatch => {
   dispatch(getEmissionsInit());
   if (filters) {
-    fetch(`/api/v1/emissions?${qs.stringify(filters)}`)
+    fetch(`${process.env.CW_API}/api/v1/emissions?${qs.stringify(filters)}`)
       .then(response => {
         if (response.ok) return response.json();
         throw Error(response.statusText);

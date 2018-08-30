@@ -15,7 +15,7 @@ const getNdcsSdgsData = createThunkAction(
           '-'
         )[1]}`
         : '';
-      fetch(`/api/v1/ndcs/${iso}/sdgs${documentFilter}`)
+      fetch(`${process.env.CW_API}/api/v1/ndcs/${iso}/sdgs${documentFilter}`)
         .then(response => {
           if (response.ok) return response.json();
           throw Error(response.statusText);

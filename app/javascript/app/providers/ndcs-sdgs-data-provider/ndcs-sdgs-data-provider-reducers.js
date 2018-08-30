@@ -1,7 +1,8 @@
 export const initialState = {
   loading: false,
   loaded: false,
-  data: {}
+  data: {},
+  activeIso: '',
 };
 
 const setLoading = (loading, state) => ({ ...state, loading });
@@ -15,7 +16,8 @@ export default {
       data: {
         ...state.data,
         [payload.iso_code3]: payload
-      }
+      },
+      activeIso: payload.iso_code3,
     };
     return setLoaded(true, setLoading(false, newState));
   }

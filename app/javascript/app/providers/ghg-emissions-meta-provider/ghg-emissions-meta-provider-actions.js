@@ -12,7 +12,7 @@ const fetchEmissionsMeta = createThunkAction(
     const { ghgEmissionsMeta } = state();
     if (isEmpty(ghgEmissionsMeta.meta) && !ghgEmissionsMeta.loading) {
       dispatch(fetchEmissionsMetaInit());
-      fetch('/api/v1/emissions/meta')
+      fetch(`${process.env.CW_API}/api/v1/emissions/meta`)
         .then(response => {
           if (response.ok) return response.json();
           throw Error(response.statusText);

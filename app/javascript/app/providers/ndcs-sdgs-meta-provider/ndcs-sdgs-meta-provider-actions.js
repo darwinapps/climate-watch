@@ -11,7 +11,7 @@ const getNdcsSdgsMeta = createThunkAction(
     const { ndcsSdgsMeta } = state();
     if (ndcsSdgsMeta && isEmpty(ndcsSdgsMeta.data)) {
       dispatch(getNdcsSdgsMetaInit());
-      fetch('/api/v1/ndcs/sdgs')
+      fetch(`${process.env.CW_API}/api/v1/ndcs/sdgs`)
         .then(response => {
           if (response.ok) return response.json();
           throw Error(response.statusText);

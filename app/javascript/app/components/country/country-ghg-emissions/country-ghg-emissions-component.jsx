@@ -9,6 +9,7 @@ import { CALCULATION_OPTIONS } from 'app/data/constants';
 import Chart from 'components/charts/chart';
 import EmissionsMetaProvider from 'providers/ghg-emissions-meta-provider';
 import WbCountryDataProvider from 'providers/wb-country-data-provider';
+import NdcsSdgsDataProvider from 'providers/ndcs-sdgs-data-provider';
 import { TabletLandscape, TabletPortraitOnly } from 'components/responsive';
 import ModalMetadata from 'components/modal-metadata';
 import { isPageContained } from 'utils/navigation';
@@ -164,39 +165,47 @@ class CountryGhgEmissions extends PureComponent {
   }
 
   render() {
-    const { isEmbed, countryName } = this.props;
+    const { isEmbed, countryName, iso } = this.props;
+
     return (
       <div className={styles.container}>
         <EmissionsMetaProvider />
         <WbCountryDataProvider />
-        <h3 className={styles.title}>
-          {`Greenhouse Gas Emissions and Emissions Targets ${isEmbed
-            ? `in ${countryName}`
-            : ''}`}
-        </h3>
-        <TabletLandscape>
-          <div
-            className={cx(styles.graphControls, {
-              [styles.graphControlsEmbed]: isEmbed
-            })}
-          >
-            {this.renderFilterDropdowns()}
-            {this.renderActionButtons()}
-          </div>
-          {this.renderChart()}
-          {this.renderQuantificationsTags()}
-        </TabletLandscape>
-        <TabletPortraitOnly>
-          <div className={styles.graphControlsSection}>
-            {this.renderFilterDropdowns()}
-          </div>
-          {this.renderChart()}
-          {this.renderQuantificationsTags()}
-          <div className={styles.graphControlsSection}>
-            {this.renderActionButtons()}
-          </div>
-        </TabletPortraitOnly>
-        <ModalMetadata />
+        <NdcsSdgsDataProvider />
+        {
+          iso
+            ? <div>
+              <h3 className={styles.title}>
+                {`Greenhouse Gas Emissions and Emissions Targets ${isEmbed
+                  ? `in ${countryName}`
+                  : ''}`}
+              </h3>
+              <TabletLandscape>
+                <div
+                  className={cx(styles.graphControls, {
+                    [styles.graphControlsEmbed]: isEmbed
+                  })}
+                >
+                  {this.renderFilterDropdowns()}
+                  {this.renderActionButtons()}
+                </div>
+                {this.renderChart()}
+                {this.renderQuantificationsTags()}
+              </TabletLandscape>
+              <TabletPortraitOnly>
+                <div className={styles.graphControlsSection}>
+                  {this.renderFilterDropdowns()}
+                </div>
+                {this.renderChart()}
+                {this.renderQuantificationsTags()}
+                <div className={styles.graphControlsSection}>
+                  {this.renderActionButtons()}
+                </div>
+              </TabletPortraitOnly>
+              <ModalMetadata />
+            </div>
+          : null
+        }
       </div>
     );
   }

@@ -34,14 +34,20 @@ import {
 
 const actions = { ...ownActions, ...modalActions };
 
-const mapStateToProps = (state, { location, match }) => {
-  const { data, quantifications } = state.countryGhgEmissions;
+const mapStateToProps = (state, { location }) => {
+  const { data, quantifications, calculation, source } = state.countryGhgEmissions;
   const calculationData = state.wbCountryData.data;
   const { meta } = state.ghgEmissionsMeta;
   const isEmbed = isEmbededComponent(location);
   const isNdcp = isPageNdcp(location) || isPageContained;
-  const search = qs.parse(location.search);
-  const iso = match.params.iso;
+
+  const search = {
+    calculation,
+    source,
+  };
+
+  const iso = state.ndcsSdgsData.activeIso;
+
   const countryGhg = {
     iso,
     meta,
@@ -133,17 +139,9 @@ class CountryGhgEmissionsContainer extends PureComponent {
   };
 
   handleSourceChange = category => {
-    const { search } = this.props.location;
-    const searchQuery = qs.parse(search);
     if (category) {
-      this.updateUrlParam(
-        [
-          { name: 'source', value: category.value },
-          { name: 'sector', value: searchQuery.sector },
-          { name: 'calculation', value: searchQuery.calculation }
-        ],
-        true
-      );
+      this.props.setSource(category.value);
+
       ReactGA.event({
         category: 'Country',
         action: 'Change Emissions source',
@@ -154,14 +152,10 @@ class CountryGhgEmissionsContainer extends PureComponent {
 
   handleCalculationChange = calculation => {
     if (calculation) {
-      this.updateUrlParam({ name: 'calculation', value: calculation.value });
+      this.props.setCalculation(calculation.value);
     }
   };
 
-  updateUrlParam(params, clear) {
-    const { history, location } = this.props;
-    history.replace(getLocationParamUpdated(location, params, clear));
-  }
   render() {
     return createElement(CountryGhgEmissionsComponent, {
       ...this.props,

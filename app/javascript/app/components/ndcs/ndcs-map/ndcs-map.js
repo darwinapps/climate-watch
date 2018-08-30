@@ -10,6 +10,9 @@ import { europeSlug, europeanCountries } from 'app/data/european-countries';
 
 import { actions as fetchActions } from 'pages/ndcs';
 import { actions as modalActions } from 'components/modal-metadata';
+import ownActions from './ndcs-map-actions';
+
+import reducers, { initialState } from './ndcs-map-reducers';
 
 import Component from './ndcs-map-component';
 
@@ -22,17 +25,17 @@ import {
   getISOCountries
 } from './ndcs-map-selectors';
 
-const actions = { ...fetchActions, ...modalActions };
+const actions = { ...fetchActions, ...modalActions, ...ownActions };
 
 const mapStateToProps = (state, { location }) => {
   const { data, loading } = state.ndcs;
+  const { category, indicator } = state.ndcsMap;
   const { countries } = state;
-  const search = qs.parse(location.search);
   const ndcsWithSelection = {
     ...data,
     countries: countries.data,
-    categorySelected: search.category,
-    indicatorSelected: search.indicator
+    categorySelected: category,
+    indicatorSelected: indicator
   };
   return {
     loading,
@@ -74,7 +77,8 @@ class NDCMapContainer extends PureComponent {
     const { isoCountries } = this.props;
     const iso = geography.properties && geography.properties.id;
     if (iso && isCountryIncluded(isoCountries, iso)) {
-      this.props.history.push(`/ndcs/country/${iso}`);
+      window.events.emit('countrySelected', iso);
+
       ReactGA.event({
         category: 'NDC Content Map',
         action: 'Use map to find country',
@@ -90,13 +94,8 @@ class NDCMapContainer extends PureComponent {
   };
 
   handleCategoryChange = category => {
-    this.updateUrlParam(
-      {
-        name: 'category',
-        value: category.value
-      },
-      true
-    );
+    this.props.setCategory(category.value)
+
     ReactGA.event({
       category: 'NDC Content Map',
       action: 'Change category',
@@ -105,7 +104,8 @@ class NDCMapContainer extends PureComponent {
   };
 
   handleIndicatorChange = indicator => {
-    this.updateUrlParam({ name: 'indicator', value: indicator.value });
+    this.props.setIndicator(indicator.value)
+
     ReactGA.event({
       category: 'NDC Content Map',
       action: 'Change indicator',
@@ -154,5 +154,7 @@ NDCMapContainer.propTypes = {
   setModalMetadata: PropTypes.func.isRequired,
   fetchNDCS: PropTypes.func.isRequired
 };
+
+export { actions, reducers, initialState };
 
 export default withRouter(connect(mapStateToProps, actions)(NDCMapContainer));

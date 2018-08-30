@@ -50,8 +50,22 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'process.env.JSCOV': JSON.stringify(false),
-      'process.env.NODE_ENV': env.NODE_ENV
-    })
+      'process.env.NODE_ENV': env.NODE_ENV,
+      'process.env.CW_API': env.CW_API
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common'
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: function (module) {
+        return module.context && module.context.indexOf('node_modules') >= 0;
+      }
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'manifest'
+    }),
+    new webpack.NamedModulesPlugin()
   ],
 
   resolve: {

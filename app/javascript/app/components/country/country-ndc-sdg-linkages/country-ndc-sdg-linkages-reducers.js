@@ -1,5 +1,6 @@
 export const initialState = {
-  tooltipData: {}
+  tooltipData: {},
+  activeSector: '',
 };
 
 const setTooltipData = (state, { payload }) => ({
@@ -7,6 +8,12 @@ const setTooltipData = (state, { payload }) => ({
   tooltipData: payload
 });
 
+const setSector = (state, { payload }) => ({
+  ...state,
+  activeSector: payload
+});
+
 export default {
-  setTooltipData
+  setTooltipData,
+  setSector,
 };

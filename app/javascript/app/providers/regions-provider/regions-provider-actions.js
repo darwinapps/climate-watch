@@ -9,7 +9,7 @@ const getRegions = createThunkAction('getRegions', () => (dispatch, state) => {
   const { regions } = state();
   if (regions && isEmpty(regions.data)) {
     dispatch(getRegionsInit());
-    fetch('/api/v1/locations/regions')
+    fetch(`${process.env.CW_API}/api/v1/locations/regions`)
       .then(response => {
         if (response.ok) return response.json();
         throw Error(response.statusText);

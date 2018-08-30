@@ -16,7 +16,7 @@ const fetchWbCountryData = createThunkAction(
       !wbCountryData.loading
     ) {
       dispatch(fetchWbCountryDataInit());
-      fetch('/api/v1/wb_extra')
+      fetch(`${process.env.CW_API}/api/v1/wb_extra`)
         .then(response => {
           if (response.ok) return response.json();
           throw Error(response.statusText);

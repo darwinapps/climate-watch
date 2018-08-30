@@ -17,7 +17,7 @@ const fetchNDCS = createThunkAction('fetchNDCS', () => (dispatch, state) => {
     !ndcs.loading
   ) {
     dispatch(fetchNDCSInit());
-    fetch('/api/v1/ndcs?filter=map')
+    fetch(`${process.env.CW_API}/api/v1/ndcs?filter=map`)
       .then(response => {
         if (response.ok) return response.json();
         throw Error(response.statusText);
