@@ -1,22 +1,16 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import cx from 'classnames';
 import Icon from 'components/icon';
 import Dot from './dot';
-
-import styles from './sdg-card-styles.scss';
 
 class SDGCard extends PureComponent {
   render() {
     const {
-      selected,
       goal,
       targets,
       indicators,
       square,
-      className,
       icons,
-      hover,
       onClick,
       onMouseEnter,
       targetData,
@@ -25,30 +19,19 @@ class SDGCard extends PureComponent {
       iso,
       activeSector
     } = this.props;
-    const cardStyle = cx(
-      styles.card,
-      {
-        [styles.selected]: selected,
-        [styles[`selected${goal.number}`]]: selected,
-        [styles.square]: square,
-        [styles.cardHover]: hover,
-        [styles[`hover${goal.number}`]]: hover
-      },
-      className
-    );
 
-    const title = square ? goal.title : `${goal.number}. ${goal.cw_title}`;
+    const title = square ? goal.title : `${goal.cw_title}`;
 
     return (
       <div
-        className={cardStyle}
+        className="ndc-sdg-linkages__card"
         onClick={onClick}
         role="menuitem"
         tabIndex={0}
         onMouseEnter={onMouseEnter}
       >
-        <h4 className={styles.title}>{title}</h4>
-        <div className={styles.dots}>
+        <h4 className="ndc-sdg-linkages__card-title">{title}</h4>
+        <div className="ndc-sdg-linkages__card-dots">
           {targets &&
             targets.map(target => (
               <Dot
@@ -64,12 +47,12 @@ class SDGCard extends PureComponent {
             ))}
         </div>
         {(!indicators || square) && (
-          <div className={styles.number}>{goal.number}</div>
+          <div className="ndc-sdg-linkages__card-number">{goal.number}</div>
         )}
         {goal.id && (
           <Icon
             icon={icons[`sdg${goal.number}`]}
-            className={cx(styles.icon, styles[`icon${goal.number}`])}
+            className={`ndc-sdg-linkages__card-icon ndc-sdg-linkages__card-icon--color-${goal.number}`}
           />
         )}
       </div>
@@ -82,13 +65,10 @@ SDGCard.propTypes = {
   goal: PropTypes.object.isRequired,
   targets: PropTypes.array,
   targetData: PropTypes.object,
-  selected: PropTypes.bool,
-  hover: PropTypes.bool,
   indicators: PropTypes.bool,
   square: PropTypes.bool,
   tooltipId: PropTypes.string,
   setTooltipData: PropTypes.func,
-  className: PropTypes.string,
   iso: PropTypes.string,
   activeSector: PropTypes.object,
   onClick: PropTypes.func,

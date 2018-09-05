@@ -8,8 +8,6 @@ import SDG from 'components/country/country-ndc-sdg-linkages';
 import NdcsSdgsMetaProvider from 'providers/ndcs-sdgs-meta-provider';
 import NdcsSdgsDataProvider from 'providers/ndcs-sdgs-data-provider';
 
-import 'styles/sticky.scss';
-
 import store from 'app/store';
 import { basename } from 'app/routes/routes';
 
@@ -17,8 +15,8 @@ const MapApp = ({ data }) => (
   <Provider store={store(data)}>
     <BrowserRouter basename={basename}>
       <div>
-        <NdcsSdgsMetaProvider/>
-        <NdcsSdgsDataProvider/>
+        <NdcsSdgsMetaProvider />
+        <NdcsSdgsDataProvider />
         <SDG />
       </div>
     </BrowserRouter>

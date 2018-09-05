@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import Proptypes from 'prop-types';
-import cx from 'classnames';
 import isEmpty from 'lodash/isEmpty';
 
 import Loading from 'components/loading';
@@ -8,16 +7,10 @@ import NdcsSdgsDataProvider from 'providers/ndcs-sdgs-data-provider';
 import NdcsSdgsMetaProvider from 'providers/ndcs-sdgs-meta-provider';
 import SDGCard from 'components/sdg-card';
 import ReactTooltip from 'react-tooltip';
-import NoContent from 'components/no-content';
 import ButtonGroup from 'components/button-group';
 import Dropdown from 'components/dropdown';
 import ModalMetadata from 'components/modal-metadata';
 import isEqual from 'lodash/isEqual';
-import Button from 'components/button';
-import { TabletLandscape, TabletPortraitOnly } from 'components/responsive';
-import layout from 'styles/layout.scss';
-import cardTheme from 'styles/themes/sdg-card/sdg-card';
-import styles from './country-ndc-sdg-linkages-styles.scss';
 
 class CountrySDGLinkages extends PureComponent {
   componentDidUpdate(prevProps) {
@@ -30,35 +23,23 @@ class CountrySDGLinkages extends PureComponent {
   }
 
   getTooltip() {
-    const { sectors, tooltipData, targets, tooltipSectorIds } = this.props;
+    const { sectors, tooltipData, targets } = this.props;
     const targetsContent = targets && targets[tooltipData.goal_number];
-    const hasTooltipData = sector => {
-      if (tooltipSectorIds) {
-        return !!tooltipSectorIds.find(id => sectors[id] === sector);
-      }
-      return false;
-    };
     const sectorsLabels =
       !isEmpty(tooltipData.sectors) &&
       (tooltipData.sectors.map(sector => sectors[sector]) || []).sort();
     return tooltipData && targetsContent ? (
-      <div className={styles.tooltip}>
-        <p className={styles.tooltipTitle}>
+      <div className="ndc-sdg-linkages__tooltip">
+        <p className="ndc-sdg-linkages__tooltip-p">
           <b>{tooltipData.number}: </b>
           {tooltipData.title}
         </p>
         {!isEmpty(tooltipData.sectors) && (
-          <p className={styles.sectors}>
+          <p className="ndc-sdg-linkages__tooltip-p">
             <b>Sectors: </b>
             {sectorsLabels.map((sector, index) => (
               <span key={`${tooltipData.targetKey}-${sector}`}>
-                <span
-                  className={cx({
-                    [styles.sectorIncluded]: hasTooltipData(sector)
-                  })}
-                >
-                  {sector}
-                </span>
+                <span>{sector}</span>
                 <span>
                   {index === tooltipData.sectors.length - 1 ? '' : ', '}
                 </span>
@@ -79,24 +60,19 @@ class CountrySDGLinkages extends PureComponent {
       loading,
       setTooltipData,
       handleOnDotClick,
-      iso,
-      isEmbed
+      iso
     } = this.props;
     const hasGoals = goals && goals.length > 0;
-    if (loading) return <Loading light className={styles.loader} />;
+    if (loading) return <Loading light />;
     if (isEmpty(goals) || isEmpty(targetsData)) {
-      return (
-        <NoContent
-          className={styles.noContent}
-          message="No SDG data available"
-        />
-      );
+      return <div />;
     }
+
     return (
       hasGoals && (
-        <div>
-          <div className={cx(styles.sdgs, { [styles.sdgsEmbed]: isEmbed })}>
-            {goals.map(goal => (
+        <div className="ndc-sdg-linkages__grid">
+          {goals.map(goal => (
+            <div className="ndc-sdg-linkages__column">
               <SDGCard
                 activeSector={activeSector}
                 key={goal.title}
@@ -107,16 +83,12 @@ class CountrySDGLinkages extends PureComponent {
                 tooltipId="sdg-linkages"
                 setTooltipData={setTooltipData}
                 indicators
-                className={cardTheme.card}
                 handleOnDotClick={handleOnDotClick}
               />
-            ))}
-          </div>
-          <ReactTooltip
-            id="sdg-linkages"
-            className={styles.tooltipContainer}
-            scrollHide={false}
-          >
+            </div>
+          ))}
+
+          <ReactTooltip id="sdg-linkages" scrollHide={false}>
             {this.getTooltip()}
           </ReactTooltip>
         </div>
@@ -136,7 +108,7 @@ class CountrySDGLinkages extends PureComponent {
       handleAnalyticsClick
     } = this.props;
     const description = (
-      <div className={styles.descriptionContainer}>
+      <p className="ndc-sdg-linkages__p">
         The colored dots represent the Sustainable Development Goals (SDGs) for
         which there is an aligned climate target, action, policy measure or need
         in the NDC. This alignment was identified based only on the information
@@ -144,22 +116,21 @@ class CountrySDGLinkages extends PureComponent {
         therefore only an entry point for considering the degree of potential
         alignment between the country’s climate and sustainable development
         objectives.
-      </div>
+      </p>
     );
 
     const href = '/contained/ndcs-sdg?isNdcp=true';
     const link = '/ndcs-sdg';
 
     const exploreButton = (
-      <Button
-        className={styles.exploreBtn}
-        color="yellow"
+      <a
+        className="ndc-cw-filter__button ndc-btn ndc-btn--cw"
         href={isNdcp ? href : null}
         link={isNdcp ? null : link}
         onClick={handleAnalyticsClick}
       >
         Explore global linkages
-      </Button>
+      </a>
     );
     const buttonGroupConfig = isEmbed
       ? [{ type: 'info', onClick: handleInfoClick }]
@@ -173,25 +144,22 @@ class CountrySDGLinkages extends PureComponent {
       ];
 
     const buttonGroup = (
-      <ButtonGroup
-        key="action1"
-        className={styles.exploreBtn}
-        buttonsConfig={buttonGroupConfig}
-      />
+      <ButtonGroup key="action1" buttonsConfig={buttonGroupConfig} />
     );
 
     const sectorFilterDescription =
       'Only linkages relevant to the selected sector are shown';
 
     return (
-      <div className={styles.wrapper}>
+      <div className="ndc-container">
         <NdcsSdgsDataProvider />
-        <div className={layout.content}>
-          <div className={styles.header}>
-            <div className={styles.buttons}>
-              <h3 className={styles.title}>NDC-SDG Linkages</h3>
-              <TabletPortraitOnly>{description}</TabletPortraitOnly>
-              {buttonGroup}
+
+        <h3 className="ndc-section__subtitle">NDC-SDG Linkages</h3>
+        {description}
+
+        <div className="ndc-cw-filter ndc-cw-filter--grey">
+          <div className="ndc-cw-filter__left">
+            <div className="ndc-cw-filter__dropdown">
               <Dropdown
                 label="Filter by sector"
                 placeholder="Choose a sector"
@@ -201,14 +169,19 @@ class CountrySDGLinkages extends PureComponent {
                 info
                 infoText={sectorFilterDescription}
               />
-              <TabletLandscape>{exploreButton}</TabletLandscape>
             </div>
-            <TabletLandscape>{description}</TabletLandscape>
           </div>
-          <NdcsSdgsMetaProvider />
-          {this.renderCards()}
-          <TabletPortraitOnly>{exploreButton}</TabletPortraitOnly>
+          <div className="ndc-cw-filter__right">
+            <div className="ndc-cw-filter__buttons">
+              {buttonGroup}
+              {exploreButton}
+            </div>
+          </div>
         </div>
+
+        <NdcsSdgsMetaProvider />
+        {this.renderCards()}
+
         <ModalMetadata />
         {isEmbed && <ReactTooltip />}
       </div>
@@ -229,7 +202,6 @@ CountrySDGLinkages.propTypes = {
   loading: Proptypes.bool,
   setTooltipData: Proptypes.func,
   tooltipData: Proptypes.object,
-  tooltipSectorIds: Proptypes.array,
   targetsMeta: Proptypes.object,
   iso: Proptypes.string,
   handleInfoClick: Proptypes.func.isRequired,

@@ -7,27 +7,18 @@ import Map from 'components/map';
 import MapLegend from 'components/map-legend';
 import Dropdown from 'components/dropdown';
 import ButtonGroup from 'components/button-group';
-import Icon from 'components/icon';
-import accordionArrow from 'assets/icons/accordion-arrow.svg';
 import Loading from 'components/loading';
 import ModalMetadata from 'components/modal-metadata';
 
-import tooltipTheme from 'styles/themes/map-tooltip/map-tooltip.scss';
-import styles from './ndcs-map-styles.scss';
-
 const getTooltip = (country, tooltipTxt) => (
-  <Link className={tooltipTheme.container} to={`/ndcs/country/${country.id}`}>
-    <div className={tooltipTheme.info}>
-      <div className={tooltipTheme.countryName}>{country.name}</div>
-      <p className={tooltipTheme.text}>{tooltipTxt}</p>
-    </div>
-    <Icon icon={accordionArrow} className={tooltipTheme.icon} />
+  <Link className="ndc-map__tooltip" to={`/ndcs/country/${country.id}`}>
+    <p className="ndc-map__tooltip-title">{country.name}</p>
+    <p className="ndc-map__tooltip-p">{tooltipTxt}</p>
   </Link>
 );
 
 const renderButtonGroup = clickHandler => (
   <ButtonGroup
-    className={styles.buttonGroup}
     buttonsConfig={[
       {
         type: 'info',
@@ -67,28 +58,43 @@ const NDCMap = ({
 }) => (
   <TabletLandscape>
     {isTablet => (
-      <div className={styles.wrapper}>
-        <div className={styles.filtersLayout}>
-          <Dropdown
-            label="Category"
-            paceholder="Select a category"
-            options={categories}
-            onValueChange={handleCategoryChange}
-            value={selectedCategory}
-            hideResetButton
-            plain
-          />
-          <Dropdown
-            label="Indicator"
-            options={indicators}
-            onValueChange={handleIndicatorChange}
-            value={selectedIndicator}
-            hideResetButton
-            plain
-          />
-          {isTablet && renderButtonGroup(handleInfoClick)}
+      <div className="ndc-container">
+        <h3 className="ndc-section__subtitle">Climate Watch</h3>
+
+        <div className="ndc-cw-filter">
+          <div className="ndc-cw-filter__left">
+            <div className="ndc-cw-filter__dropdown">
+              <Dropdown
+                label="Category"
+                paceholder="Select a category"
+                options={categories}
+                onValueChange={handleCategoryChange}
+                value={selectedCategory}
+                hideResetButton
+                plain
+              />
+            </div>
+            <div className="ndc-cw-filter__dropdown">
+              <Dropdown
+                label="Indicator"
+                options={indicators}
+                onValueChange={handleIndicatorChange}
+                value={selectedIndicator}
+                hideResetButton
+                plain
+              />
+            </div>
+          </div>
+
+          <div className="ndc-cw-filter__right">
+            <div className="ndc-cw-filter__buttons">
+              {renderButtonGroup(handleInfoClick)}
+            </div>
+          </div>
         </div>
-        {loading && <Loading light className={styles.loader} />}
+
+        {loading && <Loading light />}
+
         <Map
           paths={paths}
           tooltipId="ndcs-map-tooltip"
@@ -98,23 +104,13 @@ const NDCMap = ({
           dragEnable={false}
           customCenter={!isTablet ? [10, -50] : null}
         />
-        {!isTablet && (
-          <div className={styles.column}>
-            {renderButtonGroup(handleInfoClick, true)}
-          </div>
-        )}
         {countryData && (
-          <ReactTooltip
-            className={styles.tooltipContainer}
-            id="ndcs-map-tooltip"
-            delayHide={isTablet ? 0 : 3000}
-          >
+          <ReactTooltip id="ndcs-map-tooltip" delayHide={isTablet ? 0 : 3000}>
             {getTooltip(countryData, tooltipTxt)}
           </ReactTooltip>
         )}
         {selectedIndicator && (
           <MapLegend
-            className={styles.legend}
             title={selectedIndicator.legend}
             buckets={selectedIndicator.legendBuckets}
           />

@@ -7,8 +7,6 @@ import { BrowserRouter } from 'react-router-dom';
 import CountriesProvider from 'providers/countries-provider';
 import NDCS from 'components/ndcs/ndcs-map/ndcs-map';
 
-import 'styles/sticky.scss';
-
 import store from 'app/store';
 import { basename } from 'app/routes/routes';
 

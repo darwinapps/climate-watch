@@ -6,8 +6,6 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import Gas from 'components/country/country-ghg-emissions';
 
-import 'styles/sticky.scss';
-
 import store from 'app/store';
 import { basename } from 'app/routes/routes';
 

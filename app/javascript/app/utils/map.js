@@ -1,14 +1,14 @@
 const buckets = [
-  ['#EEBC8F', '#25597C'],
-  ['#EEBC8F', '#FEE08D', '#25597C'],
-  ['#EEBC8F', '#FEE08D', '#5081A6', '#25597C'],
-  ['#EEBC8F', '#FEE08D', '#ACBBBF', '#5081A6', '#25597C'],
-  ['#EEBC8F', '#F6CE8E', '#FEE08D', '#90B1CB', '#5081A6', '#25597C'],
-  ['#EEBC8F', '#F6CE8E', '#FEE08D', '#90B1CB', '#7199B8', '#5081A6', '#25597C'],
+  ['#0165B5', '#25597C'],
+  ['#0165B5', '#8BC5F3', '#25597C'],
+  ['#0165B5', '#8BC5F3', '#5081A6', '#25597C'],
+  ['#0165B5', '#8BC5F3', '#ACBBBF', '#5081A6', '#25597C'],
+  ['#0165B5', '#F6CE8E', '#8BC5F3', '#90B1CB', '#5081A6', '#25597C'],
+  ['#0165B5', '#F6CE8E', '#8BC5F3', '#90B1CB', '#7199B8', '#5081A6', '#25597C'],
   [
-    '#EEBC8F',
+    '#0165B5',
     '#F6CE8E',
-    '#FEE08D',
+    '#8BC5F3',
     '#ACBBBF',
     '#90B1CB',
     '#7199B8',
@@ -16,9 +16,9 @@ const buckets = [
     '#25597C'
   ],
   [
-    '#EEBC8F',
+    '#0165B5',
     '#F6CE8E',
-    '#FEE08D',
+    '#8BC5F3',
     '#E3D2A0',
     '#ACBBBF',
     '#90B1CB',
@@ -27,9 +27,9 @@ const buckets = [
     '#25597C'
   ],
   [
-    '#EEBC8F',
+    '#0165B5',
     '#F6CE8E',
-    '#FEE08D',
+    '#8BC5F3',
     '#E3D2A0',
     '#C5C5B2',
     '#ACBBBF',
@@ -42,8 +42,8 @@ const buckets = [
 
 export function getColorByIndex(data, index) {
   const length = Object.keys(data).length;
-  if (index === -2) return '#ddd';
-  return buckets[length - 2][index - 1] || '#E5E5EB';
+  if (index === -2) return '#B5C7D2';
+  return buckets[length - 2][index - 1] || '#FFFFFF';
 }
 
 export function createLegendBuckets(locations, labels, isos) {

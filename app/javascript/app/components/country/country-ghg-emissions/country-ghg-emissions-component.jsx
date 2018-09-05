@@ -1,21 +1,15 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import cx from 'classnames';
 import Dropdown from 'components/dropdown';
 import ButtonGroup from 'components/button-group';
-import Button from 'components/button';
 import Tag from 'components/tag';
 import { CALCULATION_OPTIONS } from 'app/data/constants';
 import Chart from 'components/charts/chart';
 import EmissionsMetaProvider from 'providers/ghg-emissions-meta-provider';
 import WbCountryDataProvider from 'providers/wb-country-data-provider';
 import NdcsSdgsDataProvider from 'providers/ndcs-sdgs-data-provider';
-import { TabletLandscape, TabletPortraitOnly } from 'components/responsive';
 import ModalMetadata from 'components/modal-metadata';
 import { isPageContained } from 'utils/navigation';
-
-import quantificationTagTheme from 'styles/themes/tag/quantification-tag.scss';
-import styles from './country-ghg-emissions-styles.scss';
 
 class CountryGhgEmissions extends PureComponent {
   renderFilterDropdowns() {
@@ -28,22 +22,26 @@ class CountryGhgEmissions extends PureComponent {
       sourceSelected
     } = this.props;
     return [
-      <Dropdown
-        key="filter1"
-        label="Data Source"
-        options={sources}
-        onValueChange={handleSourceChange}
-        value={sourceSelected}
-        hideResetButton
-      />,
-      <Dropdown
-        key="filter2"
-        label="Metric"
-        options={calculations}
-        onValueChange={handleCalculationChange}
-        value={calculationSelected}
-        hideResetButton
-      />
+      <div className="ndc-cw-filter__dropdown">
+        <Dropdown
+          key="filter1"
+          label="Data Source"
+          options={sources}
+          onValueChange={handleSourceChange}
+          value={sourceSelected}
+          hideResetButton
+        />
+      </div>,
+      <div className="ndc-cw-filter__dropdown">
+        <Dropdown
+          key="filter2"
+          label="Metric"
+          options={calculations}
+          onValueChange={handleCalculationChange}
+          value={calculationSelected}
+          hideResetButton
+        />
+      </div>
     ];
   }
 
@@ -82,22 +80,17 @@ class CountryGhgEmissions extends PureComponent {
     const href = `/contained/ghg-emissions?breakBy=location&filter=${iso}&isNdcp=true`;
 
     return [
-      <ButtonGroup
-        key="action1"
-        className={styles.btnGroup}
-        buttonsConfig={buttonGroupConfig}
-      />,
-      <Button
+      <ButtonGroup key="action1" buttonsConfig={buttonGroupConfig} />,
+      <a
+        className="ndc-cw-filter__button ndc-btn ndc-btn--cw"
         key="action2"
         noSpace
-        className={styles.exploreBtn}
-        color="yellow"
         href={isNdcp ? href : null}
         link={isNdcp ? null : link}
         onClick={handleAnalyticsClick}
       >
         Explore emissions
-      </Button>
+      </a>
     ];
   }
 
@@ -125,21 +118,22 @@ class CountryGhgEmissions extends PureComponent {
         : 0;
 
     return (
-      <Chart
-        className={styles.graph}
-        type={useLineChart ? 'line' : 'area'}
-        config={config}
-        data={data}
-        domain={useLineChart && domain}
-        onMouseMove={handleYearHover}
-        points={points}
-        dataOptions={filtersOptions}
-        dataSelected={filtersSelected}
-        loading={loading}
-        height={360}
-        forceFixedFormatDecimals={forceFixedFormatDecimals}
-        stepped={sourceSelected.label === 'UNFCCC'}
-      />
+      <div className="ndcs-gas__chart">
+        <Chart
+          type={useLineChart ? 'line' : 'area'}
+          config={config}
+          data={data}
+          domain={useLineChart && domain}
+          onMouseMove={handleYearHover}
+          points={points}
+          dataOptions={filtersOptions}
+          dataSelected={filtersSelected}
+          loading={loading}
+          height={360}
+          forceFixedFormatDecimals={forceFixedFormatDecimals}
+          stepped={sourceSelected.label === 'UNFCCC'}
+        />
+      </div>
     );
   }
 
@@ -151,13 +145,11 @@ class CountryGhgEmissions extends PureComponent {
           !isPageContained &&
           quantificationsTagsConfig.map(q => (
             <Tag
-              theme={quantificationTagTheme}
               key={q.label}
               canRemove={false}
               label={q.label}
               color={q.color}
               data={q}
-              className={styles.quantificationsTags}
             />
           ))}
       </ul>
@@ -168,44 +160,35 @@ class CountryGhgEmissions extends PureComponent {
     const { isEmbed, countryName, iso } = this.props;
 
     return (
-      <div className={styles.container}>
+      <div>
         <EmissionsMetaProvider />
         <WbCountryDataProvider />
         <NdcsSdgsDataProvider />
-        {
-          iso
-            ? <div>
-              <h3 className={styles.title}>
-                {`Greenhouse Gas Emissions and Emissions Targets ${isEmbed
-                  ? `in ${countryName}`
-                  : ''}`}
-              </h3>
-              <TabletLandscape>
-                <div
-                  className={cx(styles.graphControls, {
-                    [styles.graphControlsEmbed]: isEmbed
-                  })}
-                >
-                  {this.renderFilterDropdowns()}
+        {iso ? (
+          <div className="ndc-container">
+            <h3 className="ndc-section__subtitle">
+              {`Greenhouse Gas Emissions and Emissions Targets ${isEmbed
+                ? `in ${countryName}`
+                : ''}`}
+            </h3>
+
+            <div className="ndc-cw-filter">
+              <div className="ndc-cw-filter__left">
+                {this.renderFilterDropdowns()}
+              </div>
+
+              <div className="ndc-cw-filter__right">
+                <div className="ndc-cw-filter__buttons">
                   {this.renderActionButtons()}
                 </div>
-                {this.renderChart()}
-                {this.renderQuantificationsTags()}
-              </TabletLandscape>
-              <TabletPortraitOnly>
-                <div className={styles.graphControlsSection}>
-                  {this.renderFilterDropdowns()}
-                </div>
-                {this.renderChart()}
-                {this.renderQuantificationsTags()}
-                <div className={styles.graphControlsSection}>
-                  {this.renderActionButtons()}
-                </div>
-              </TabletPortraitOnly>
-              <ModalMetadata />
+              </div>
             </div>
-          : null
-        }
+
+            {this.renderChart()}
+
+            <ModalMetadata />
+          </div>
+        ) : null}
       </div>
     );
   }
