@@ -1,6 +1,7 @@
 import { PureComponent, createElement } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import cx from 'classnames';
 
 class Dot extends PureComponent {
   render() {
@@ -10,6 +11,7 @@ class Dot extends PureComponent {
       hasSectors,
       tooltipId,
       setTooltipData,
+      hideDot,
       path
     } = this.props;
 
@@ -17,7 +19,11 @@ class Dot extends PureComponent {
       onMouseEnter: () => setTooltipData(target),
       'data-for': tooltipId,
       'data-tip': true,
-      className: 'ndc-sdg-linkages__card-dot',
+      className: cx(
+        'ndc-sdg-linkages__card-dot',
+        { 'ndc-sdg-linkages__card-dot--hidden': hideDot },
+        { 'ndc-sdg-linkages__card-dot--clickable': hasSectors }
+      ),
       style: { backgroundColor: hasSectors ? goal.colour : '' }
     };
     if (hasSectors) dotProps = { ...dotProps, to: path };
@@ -32,6 +38,7 @@ Dot.propTypes = {
   hasSectors: PropTypes.bool,
   tooltipId: PropTypes.string,
   setTooltipData: PropTypes.func,
+  hideDot: PropTypes.bool,
   path: PropTypes.string
 };
 

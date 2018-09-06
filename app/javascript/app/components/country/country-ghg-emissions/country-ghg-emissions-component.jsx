@@ -22,9 +22,8 @@ class CountryGhgEmissions extends PureComponent {
       sourceSelected
     } = this.props;
     return [
-      <div className="ndc-cw-filter__dropdown">
+      <div key="filter1" className="ndc-cw-filter__dropdown">
         <Dropdown
-          key="filter1"
           label="Data Source"
           options={sources}
           onValueChange={handleSourceChange}
@@ -32,9 +31,8 @@ class CountryGhgEmissions extends PureComponent {
           hideResetButton
         />
       </div>,
-      <div className="ndc-cw-filter__dropdown">
+      <div key="filter2" className="ndc-cw-filter__dropdown">
         <Dropdown
-          key="filter2"
           label="Metric"
           options={calculations}
           onValueChange={handleCalculationChange}
@@ -84,7 +82,6 @@ class CountryGhgEmissions extends PureComponent {
       <a
         className="ndc-cw-filter__button ndc-btn ndc-btn--cw"
         key="action2"
-        noSpace
         href={isNdcp ? href : null}
         link={isNdcp ? null : link}
         onClick={handleAnalyticsClick}

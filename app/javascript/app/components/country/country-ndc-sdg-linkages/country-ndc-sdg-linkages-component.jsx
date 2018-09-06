@@ -72,10 +72,9 @@ class CountrySDGLinkages extends PureComponent {
       hasGoals && (
         <div className="ndc-sdg-linkages__grid">
           {goals.map(goal => (
-            <div className="ndc-sdg-linkages__column">
+            <div key={goal.title} className="ndc-sdg-linkages__column">
               <SDGCard
                 activeSector={activeSector}
-                key={goal.title}
                 goal={goal}
                 iso={iso}
                 targets={targets[goal.number]}
