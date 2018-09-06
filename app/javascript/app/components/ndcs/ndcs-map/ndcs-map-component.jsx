@@ -93,7 +93,7 @@ const NDCMap = ({
           </div>
         </div>
 
-        {loading && <Loading light />}
+        {loading && <Loading />}
 
         <Map
           paths={paths}

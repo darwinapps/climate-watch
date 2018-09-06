@@ -1,49 +1,49 @@
 const buckets = [
-  ['#0165B5', '#25597C'],
-  ['#0165B5', '#8BC5F3', '#25597C'],
-  ['#0165B5', '#8BC5F3', '#5081A6', '#25597C'],
-  ['#0165B5', '#8BC5F3', '#ACBBBF', '#5081A6', '#25597C'],
-  ['#0165B5', '#F6CE8E', '#8BC5F3', '#90B1CB', '#5081A6', '#25597C'],
-  ['#0165B5', '#F6CE8E', '#8BC5F3', '#90B1CB', '#7199B8', '#5081A6', '#25597C'],
+  ['#0165b5', '#8bc5f3'],
+  ['#0165b5', '#8bc5f3', '#b5c7d2'],
+  ['#0165b5', '#8bc5f3', '#b5c7d2', '#4d5f6a'],
+  ['#7982d8', '#0165b5', '#8bc5f3', '#b5c7d2', '#4d5f6a'],
+  ['#7982d8', '#0165b5', '#8bc5f3', '#52b4d7', '#b5c7d2', '#4d5f6a'],
+  ['#7982d8', '#0165b5', '#8bc5f3', '#52b4d7', '#b5c7d2', '#81939e', '#4d5f6a'],
   [
-    '#0165B5',
-    '#F6CE8E',
-    '#8BC5F3',
-    '#ACBBBF',
-    '#90B1CB',
-    '#7199B8',
-    '#5081A6',
-    '#25597C'
+    '#7982d8',
+    '#0165b5',
+    '#8bc5f3',
+    '#52b4d7',
+    '#b5c7d2',
+    '#9badb8',
+    '#81939e',
+    '#4d5f6a'
   ],
   [
-    '#0165B5',
-    '#F6CE8E',
-    '#8BC5F3',
-    '#E3D2A0',
-    '#ACBBBF',
-    '#90B1CB',
-    '#7199B8',
-    '#5081A6',
-    '#25597C'
+    '#7982d8',
+    '#0165b5',
+    '#4695d4',
+    '#8bc5f3',
+    '#52b4d7',
+    '#b5c7d2',
+    '#9badb8',
+    '#81939e',
+    '#4d5f6a'
   ],
   [
-    '#0165B5',
-    '#F6CE8E',
-    '#8BC5F3',
-    '#E3D2A0',
-    '#C5C5B2',
-    '#ACBBBF',
-    '#90B1CB',
-    '#7199B8',
-    '#5081A6',
-    '#25597C'
+    '#7982d8',
+    '#0165b5',
+    '#4695d4',
+    '#8bc5f3',
+    '#52b4d7',
+    '#97c1d3',
+    '#b5c7d2',
+    '#9badb8',
+    '#81939e',
+    '#4d5f6a'
   ]
 ];
 
 export function getColorByIndex(data, index) {
   const length = Object.keys(data).length;
-  if (index === -2) return '#B5C7D2';
-  return buckets[length - 2][index - 1] || '#FFFFFF';
+  if (index === -2) return '#dee6ec';
+  return buckets[length - 2][index - 1] || '#ffffff';
 }
 
 export function createLegendBuckets(locations, labels, isos) {
