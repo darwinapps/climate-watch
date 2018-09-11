@@ -16,6 +16,9 @@ const fetchCountryGhgEmissionsDataReady = createAction(
 const fetchCountryGhgEmissionsData = createThunkAction(
   'fetchCountryGhgEmissionsData',
   filters => dispatch => {
+    if (!(filters && filters.gas && filters.source && filters.location)) {
+      return;
+    }
     dispatch(fetchCountryGhgEmissionsInit());
     const promises = [
       fetch(`${process.env.CW_API}/api/v1/emissions?${qs.stringify(filters)}`).then(response => {
