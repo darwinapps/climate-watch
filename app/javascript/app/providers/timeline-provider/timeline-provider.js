@@ -8,9 +8,13 @@ import reducers, { initialState } from './timeline-provider-reducers';
 
 class TimelineProvider extends PureComponent {
   componentDidMount() {
-    const { match, getTimeline } = this.props;
-    const iso = match.params.iso;
-    getTimeline(iso);
+    // @STANDALONE-COMPONENTS
+    // const { match, getTimeline } = this.props;
+    // const iso = match.params.iso;
+    // getTimeline(iso);
+    window.events.on('countrySelected', iso => {
+      this.props.getTimeline(iso);
+    })
   }
 
   componentWillReceiveProps(nextProps) {

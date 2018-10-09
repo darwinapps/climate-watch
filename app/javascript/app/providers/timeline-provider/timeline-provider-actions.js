@@ -12,7 +12,7 @@ const getTimeline = createThunkAction(
     const { timeline } = state();
     if (isEmpty(timeline.data[iso]) && !timeline.loading) {
       dispatch(getTimelineInit());
-      fetch(`/api/v1/timeline/${iso}`)
+      fetch(`${process.env.CW_API}/api/v1/timeline/${iso}`)
         .then(response => {
           if (response.ok) return response.json();
           throw Error(response.statusText);

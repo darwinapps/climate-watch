@@ -17,15 +17,14 @@ class NdcsCountryAccordion extends PureComponent {
       compare,
       locations,
       category,
-      search
+      setParam,
+      searchParams,
     } = this.props;
     let message = 'No content for this category';
     if (compare && !locations) {
       message = 'Select a country to start';
     }
-    if (search.search) {
-      message = 'No content for that search or category';
-    }
+
     const showNoContent = !loading && (!ndcsData || !ndcsData.length);
     const showData = !loading && ndcsData && ndcsData.length > 0;
     return (
@@ -41,6 +40,8 @@ class NdcsCountryAccordion extends PureComponent {
                 className={styles.accordion}
                 param="section"
                 data={ndcsData}
+                search={searchParams}
+                changeParams={setParam}
                 hasNestedCollapse
               >
                 {ndcsData &&
@@ -54,6 +55,8 @@ class NdcsCountryAccordion extends PureComponent {
                           className={styles.subAccordion}
                           param="sector"
                           data={section.sectors}
+                          search={searchParams}
+                          changeParams={setParam}
                         >
                           {section.sectors.map(desc => (
                             <div
@@ -77,6 +80,8 @@ class NdcsCountryAccordion extends PureComponent {
                 param="section"
                 data={ndcsData}
                 loading={loading}
+                search={searchParams}
+                changeParams={setParam}
               >
                 {ndcsData &&
                   ndcsData.map(section => (

@@ -12,7 +12,8 @@ import CountryNdcOverviewComponent from './country-ndc-overview-component';
 import { getValuesGrouped } from './country-ndc-overview-selectors';
 
 const mapStateToProps = (state, { location, match }) => {
-  const { iso } = match.params;
+  const iso = state.ndcsSdgsData.activeIso;
+
   const overviewData =
     state.ndcContentOverview.data && state.ndcContentOverview.data.locations;
   const countryData = overviewData ? overviewData[iso] : null;

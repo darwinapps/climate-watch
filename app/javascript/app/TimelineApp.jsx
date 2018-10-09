@@ -4,22 +4,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
-
-import Gas from 'components/country/country-ghg';
+import Timeline from 'components/country/country-timeline';
+import TimelineProvider from 'providers/timeline-provider';
 
 import store from 'app/store';
 import { basename } from 'app/routes/routes';
 
-const GasApp = ({ data }) => (
+const TimelineApp = ({ data }) => (
   <Provider store={store(data)}>
     <BrowserRouter basename={basename}>
-      <Gas />
+      <div>
+        <TimelineProvider />
+        <Timeline />
+      </div>
     </BrowserRouter>
   </Provider>
 );
 
-GasApp.propTypes = {
+TimelineApp.propTypes = {
   data: PropTypes.object
 };
 
-export default GasApp;
+export default TimelineApp;

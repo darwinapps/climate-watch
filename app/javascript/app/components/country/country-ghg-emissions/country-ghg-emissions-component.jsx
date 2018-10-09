@@ -162,7 +162,7 @@ class CountryGhgEmissions extends PureComponent {
         <WbCountryDataProvider />
         <NdcsSdgsDataProvider />
         {iso ? (
-          <div className="ndc-container">
+          <div>
             <h3 className="ndc-section__subtitle">
               {`Greenhouse Gas Emissions and Emissions Targets ${isEmbed
                 ? `in ${countryName}`
@@ -182,7 +182,7 @@ class CountryGhgEmissions extends PureComponent {
             </div>
 
             {this.renderChart()}
-
+            {this.renderQuantificationsTags()}
             <ModalMetadata />
           </div>
         ) : null}

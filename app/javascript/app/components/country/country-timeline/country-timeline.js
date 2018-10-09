@@ -10,7 +10,7 @@ import CountryTimelineComponent from './country-timeline-component';
 import { getDates } from './country-timeline-selectors';
 
 const mapStateToProps = (state, { match }) => {
-  const { iso } = match.params;
+  const iso = state.timeline.activeIso;
   const countryTimeline = {
     timeline: state.timeline,
     iso

@@ -1,7 +1,8 @@
 export const initialState = {
   loading: false,
   loaded: false,
-  data: {}
+  data: {},
+  params: {},
 };
 
 const setLoading = (loading, state) => ({ ...state, loading });
@@ -24,5 +25,16 @@ export default {
     };
 
     return setLoaded(true, setLoading(false, newState));
-  }
+  },
+  setParam: (state, { payload }) => ({
+      ...state,
+      params: {
+        ...state.params,
+        [payload.name]: payload.value
+      },
+  }),
+  removeParams: state => ({
+    ...state,
+    params: {},
+  }),
 };

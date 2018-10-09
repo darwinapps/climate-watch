@@ -18,7 +18,7 @@ const fetchNdcsCountryAccordion = createThunkAction(
     if (locations) {
       dispatch(fetchNdcsCountryAccordionInit());
       fetch(
-        `/api/v1/ndcs?location=${locations}&category=${category}${!compare
+        `${process.env.CW_API}/api/v1/ndcs?location=${locations}&category=${category}${!compare
           ? '&filter=overview'
           : ''}`
       )
@@ -35,9 +35,15 @@ const fetchNdcsCountryAccordion = createThunkAction(
   }
 );
 
+const setParam = createAction('setParam');
+
+const removeParams = createAction('removeParams');
+
 export default {
   fetchNdcsCountryAccordion,
   fetchNdcsCountryAccordionInit,
   fetchNdcsCountryAccordionReady,
-  fetchNdcsCountryAccordionFailed
+  fetchNdcsCountryAccordionFailed,
+  setParam,
+  removeParams,
 };

@@ -32,19 +32,20 @@ const mapStateToProps = (state, { location, match, year }) => {
   const { data: countries } = state.countries;
   const search = qs.parse(location.search);
   const calculationData = state.wbCountryData.data;
+  const iso = state.ndcsSdgsData.activeIso;
   const stateWithSelected = {
     countries,
     data,
     calculationData,
     meta,
     search,
-    iso: match.params.iso,
+    iso,
     year,
     zoom: state.map.zoom
   };
 
   return {
-    iso: match.params.iso,
+    iso,
     ready: getMapReady(state.countryGhgEmissionsMap),
     yearSelected: getYearSelected(stateWithSelected),
     sourceSelected: getSourceSelected(stateWithSelected),
@@ -88,8 +89,7 @@ class CountryGhgMapContainer extends Component {
     const { history } = this.props;
     const iso = geometry.properties.id;
     if (iso) {
-      const path = `/countries/${iso}`;
-      history.push(path);
+      window.events.emit('countrySelected', iso);
     }
   };
 

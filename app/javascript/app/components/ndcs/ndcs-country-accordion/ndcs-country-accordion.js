@@ -14,13 +14,11 @@ import {
 } from './ndcs-country-accordion-selectors';
 
 const mapStateToProps = (state, { match, location, category }) => {
-  const { iso } = match.params;
-  const search = qs.parse(location.search);
-  const locations = search.locations ? search.locations.split(',') : null;
+  const iso = state.ndcsSdgsData.activeIso;
   const ndcsData = {
     data: state.ndcCountryAccordion.data,
-    search: search.search,
-    countries: match.params.iso ? [match.params.iso] : locations
+    iso,
+    countries: iso ? [iso] : null
   };
   return {
     loading: state.ndcCountryAccordion.loading,
@@ -28,9 +26,8 @@ const mapStateToProps = (state, { match, location, category }) => {
       category === 'sectoral_information'
         ? filterSectoralNDCs(ndcsData)
         : filterNDCs(ndcsData),
-    search,
+    searchParams: state.ndcCountryAccordion.params,
     iso,
-    locations
   };
 };
 
@@ -40,20 +37,20 @@ class NdcsCountryAccordionContainer extends PureComponent {
       iso,
       fetchNdcsCountryAccordion,
       category,
-      search,
       compare
     } = this.props;
-    const locations = iso || search.locations;
+    const locations = iso;
     fetchNdcsCountryAccordion({ locations, category, compare });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { fetchNdcsCountryAccordion, compare } = this.props;
-    const newLocations = qs.parse(nextProps.location.search).locations;
-    const oldLocations = qs.parse(this.props.location.search).locations;
-    if (newLocations !== oldLocations) {
+    const { fetchNdcsCountryAccordion, compare, iso, category, params, removeParams } = this.props;
+
+    if ( iso !== nextProps.iso || category !== nextProps.category) {
+      removeParams();
+
       fetchNdcsCountryAccordion({
-        locations: newLocations,
+        locations: [nextProps.iso],
         category: nextProps.category,
         compare
       });
@@ -69,6 +66,8 @@ class NdcsCountryAccordionContainer extends PureComponent {
 
 NdcsCountryAccordionContainer.propTypes = {
   fetchNdcsCountryAccordion: PropTypes.func,
+  setParam: PropTypes.func,
+  removeParams: PropTypes.func,
   iso: PropTypes.string,
   category: PropTypes.string,
   search: PropTypes.object,

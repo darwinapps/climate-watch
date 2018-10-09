@@ -5,21 +5,26 @@ import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
-import Gas from 'components/country/country-ghg';
+import Tabs from 'components/ndcs/ndcs-country-tabs';
+
+import NdcsSdgsDataProvider from 'providers/ndcs-sdgs-data-provider';
 
 import store from 'app/store';
 import { basename } from 'app/routes/routes';
 
-const GasApp = ({ data }) => (
+const TabsApp = ({ data }) => (
   <Provider store={store(data)}>
     <BrowserRouter basename={basename}>
-      <Gas />
+        <div>
+          <NdcsSdgsDataProvider />
+          <Tabs />
+        </div>
     </BrowserRouter>
   </Provider>
 );
 
-GasApp.propTypes = {
+TabsApp.propTypes = {
   data: PropTypes.object
 };
 
-export default GasApp;
+export default TabsApp;

@@ -14,7 +14,7 @@ const getNdcContentOverview = createThunkAction(
     locations.forEach(location => {
       if (!data || !data.locations[location]) {
         promises.push(
-          fetch(`/api/v1/ndcs/${location}/content_overview`).then(response => {
+          fetch(`${process.env.CW_API}/api/v1/ndcs/${location}/content_overview`).then(response => {
             if (response.ok) return response.json();
             throw Error(response.statusText);
           })

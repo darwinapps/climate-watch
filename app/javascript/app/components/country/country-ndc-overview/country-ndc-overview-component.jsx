@@ -192,7 +192,7 @@ class CountryNdcOverview extends PureComponent {
 
     return (
       <div className={cx(styles.wrapper, { [styles.embededWrapper]: isEmbed })}>
-        <NdcContentOverviewProvider locations={[iso]} />
+        <NdcContentOverviewProvider locations={iso ? [iso] : []} />
         {!hasSectors && !loading ? (
           <NoContent
             message="No overview content data"

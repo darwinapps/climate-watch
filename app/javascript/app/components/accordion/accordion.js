@@ -7,8 +7,7 @@ import { getLocationParamUpdated } from 'utils/navigation';
 
 import AccordionComponent from './accordion-component';
 
-const mapStateToProps = (state, { location, param }) => {
-  const search = qs.parse(location.search);
+const mapStateToProps = (state, { search, param }) => {
   const openSlug = search[param] || null;
   return {
     openSlug
@@ -24,7 +23,8 @@ class AccordionContainer extends PureComponent {
 
   updateUrlParam = (params, clear) => {
     const { history, location } = this.props;
-    history.replace(getLocationParamUpdated(location, params, clear));
+
+    this.props.changeParams(params)
   };
 
   render() {
@@ -38,7 +38,9 @@ class AccordionContainer extends PureComponent {
 AccordionContainer.propTypes = {
   location: Proptypes.object,
   history: Proptypes.object,
-  param: Proptypes.string
+  param: Proptypes.string,
+  search: Proptypes.object,
+  changeParams: Proptypes.func,
 };
 
 export default withRouter(connect(mapStateToProps, null)(AccordionContainer));
