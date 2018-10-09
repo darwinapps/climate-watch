@@ -58,7 +58,7 @@ class NdcsCountryTabs extends PureComponent {
           tabs.map(tab => <div
             key={tab.key}
             onClick={() => this.setActiveTabKey(tab.key)}
-            style={tab.key === activeTabKey ? { fontWeight: 700 } : {}}
+            className={`ndcs-country-tab${tab.key === activeTabKey ? '-active' : ''}`}
           >
             {tab.label}
           </div>)
