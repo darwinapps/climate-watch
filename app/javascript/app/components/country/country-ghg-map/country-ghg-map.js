@@ -6,6 +6,8 @@ import qs from 'query-string';
 
 import Loading from 'components/loading';
 
+import { getLocationParamUpdated } from '../../../utils/navigation'
+
 import { actions as mapActions } from 'components/map/map';
 import ownActions from './country-ghg-map-actions';
 import reducers, { initialState } from './country-ghg-map-reducers';
@@ -89,7 +91,9 @@ class CountryGhgMapContainer extends Component {
     const { history } = this.props;
     const iso = geometry.properties.id;
     if (iso) {
-      window.events.emit('countrySelected', iso);
+      const uri = getLocationParamUpdated(window.location, { name: 'iso', value: iso }, true)
+      window.location.href = [uri.pathname, uri.search].join('?')
+      // window.events.emit('countrySelected', iso);
     }
   };
 
