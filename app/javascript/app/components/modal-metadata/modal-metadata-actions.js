@@ -40,7 +40,7 @@ const fetchModalMetaData = createThunkAction(
     if (slugsToFetch.length > 0) {
       dispatch(fetchModalMetaDataInit());
       const promises = slugsToFetch.map(slug =>
-        fetch(`/api/v1/metadata/${slug.toLowerCase()}`).then(response => {
+        fetch(`${process.env.CW_API}/api/v1/metadata/${slug.toLowerCase()}`).then(response => {
           if (response.ok) return response.json();
           throw Error(response.statusText);
         })
