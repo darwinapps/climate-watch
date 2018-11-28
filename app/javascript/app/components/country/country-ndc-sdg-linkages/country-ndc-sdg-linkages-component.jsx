@@ -124,9 +124,10 @@ class CountrySDGLinkages extends PureComponent {
     const exploreButton = (
       <a
         className="ndc-cw-filter__button ndc-btn ndc-btn--cw"
-        href={isNdcp ? href : null}
-        link={isNdcp ? null : link}
-        onClick={handleAnalyticsClick}
+        href="/climate-data/ndcs-sdg"
+        // href={isNdcp ? href : null}
+        // link={isNdcp ? null : link}
+        // onClick={handleAnalyticsClick}
       >
         Explore global linkages
       </a>

@@ -82,9 +82,10 @@ class CountryGhgEmissions extends PureComponent {
       <a
         className="ndc-cw-filter__button ndc-btn ndc-btn--cw"
         key="action2"
-        href={isNdcp ? href : null}
-        link={isNdcp ? null : link}
-        onClick={handleAnalyticsClick}
+        href="/climate-data/ghg-emissions"
+        // href={isNdcp ? href : null}
+        // link={isNdcp ? null : link}
+        // onClick={handleAnalyticsClick}
       >
         Explore emissions
       </a>
