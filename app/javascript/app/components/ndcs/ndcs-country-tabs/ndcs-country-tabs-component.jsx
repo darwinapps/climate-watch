@@ -55,13 +55,13 @@ class NdcsCountryTabs extends PureComponent {
     return (
       <div>
         {
-          tabs.map(tab => <div
-            key={tab.key}
-            onClick={() => this.setActiveTabKey(tab.key)}
-            className={`ndcs-country-tab${tab.key === activeTabKey ? '-active' : ''}`}
-          >
-            {tab.label}
-          </div>)
+          // tabs.map(tab => <div
+          //   key={tab.key}
+          //   onClick={() => this.setActiveTabKey(tab.key)}
+          //   className={`ndcs-country-tab${tab.key === activeTabKey ? '-active' : ''}`}
+          // >
+          //   {tab.label}
+          // </div>)
         }
         { activeTab.component() }
       </div>
