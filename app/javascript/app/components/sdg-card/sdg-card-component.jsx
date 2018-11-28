@@ -20,7 +20,7 @@ class SDGCard extends PureComponent {
       activeSector
     } = this.props;
 
-    const title = square ? goal.title : `${goal.cw_title}`;
+    const title = square ? goal.title : `${goal.number}. ${goal.cw_title}`;
 
     return (
       <div
