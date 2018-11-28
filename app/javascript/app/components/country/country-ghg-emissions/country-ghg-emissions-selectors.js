@@ -89,11 +89,17 @@ const parseCalculationData = createSelector([getCalculationData], data => {
 
 export const getCalculationOptions = () => options;
 
+const getDefaultSource = (sources) => {
+  const UNFCCC = sources.find(x => x.label === 'UNFCCC')
+  if (UNFCCC) return UNFCCC
+  return sources[0]
+}
+
 export const getSourceSelected = createSelector(
   [getSourceOptions, getSourceSelection],
   (sources, selected) => {
     if (!sources || !sources.length) return {};
-    if (!selected) return sources[0];
+    if (!selected) return getDefaultSource(sources);
     return sources.find(category => category.value === parseInt(selected, 10));
   }
 );
