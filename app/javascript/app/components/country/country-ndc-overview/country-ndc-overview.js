@@ -23,6 +23,7 @@ const mapStateToProps = (state, { location, match }) => {
     iso,
     isNdcp,
     isEmbed,
+    actions: true,
     values: getValuesGrouped(countryData),
     loading: state.ndcContentOverview.loading,
     sectors: countryData ? countryData.sectors : null,

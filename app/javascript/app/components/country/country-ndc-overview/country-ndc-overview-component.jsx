@@ -64,9 +64,10 @@ class CountryNdcOverview extends PureComponent {
       <Button
         className={styles.exploreBtn}
         color="yellow"
-        href={isNdcp ? href : null}
-        link={isNdcp ? null : link}
-        onClick={handleAnalyticsClick}
+        href="/climate-watch/ndcs"
+        // href={isNdcp ? href : null}
+        // link={isNdcp ? null : link}
+        // onClick={handleAnalyticsClick}
       >
         Explore NDC content
       </Button>
