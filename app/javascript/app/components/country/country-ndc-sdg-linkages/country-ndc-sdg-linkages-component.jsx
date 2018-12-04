@@ -183,7 +183,7 @@ class CountrySDGLinkages extends PureComponent {
         {this.renderCards()}
 
         <ModalMetadata />
-        {isEmbed && <ReactTooltip />}
+        <ReactTooltip />
       </div>
     );
   }
